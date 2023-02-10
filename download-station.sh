@@ -211,7 +211,8 @@ list() {
 }
 
 add() {
-	if echo "$1" | grep -m 1 -q "magnet:?\|^http://.*\.torrent$\|^https://.*\.torrent$"; then
+# 	if echo "$1" | grep -m 1 -q "^magnet:?\|^http://.*\.torrent$\|^https://.*\.torrent$"; then
+	if echo "$1" | grep -m 1 -q "^magnet:?\|^http://\|^https://"; then
 		echo -n "Adding URL... "
 		local API="SYNO.DownloadStation.Task"
 		local cleaned_url=$(echo -n "$1" | sed -e 's/%/%25/g' | sed -e 's/+/%2B/g'  | sed -e 's/ /%20/g' | sed -e 's/&/%26/g'  | sed -e 's/=/%3D/g')
