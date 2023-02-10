@@ -23,14 +23,11 @@ fi
 setup_colours() {
 	# Check if terminal allows output, if yes, define colors for output
 	if [[ -t 1 ]]; then
-		local ncolors=$(tput colors)
-		if [[ -n $ncolors && $ncolors -ge 8 ]]; then
-			RED=$(tput setaf 1)		# ANSI red
-			GREEN=$(tput setaf 2)	# ANSI green
-			NC=$(tput sgr0)			# (N)o (C)olor
-		else
-			RED='';GREEN='';NC=''
-		fi
+		RED="\033[1;31m"
+		GREEN="\033[1;32m"
+		NC="\033[0m"		# (N)o (C)olour
+	else
+		RED=''; GREEN=''; NC='';
 	fi
 }
 
@@ -39,7 +36,7 @@ check_tool() {
 	local command=$1
 	if ! command -v "$command" >/dev/null; then
 		if [[ $DEBUG_LEVEL -gt 0 ]]; then
-			echo "${RED}Error, command '$command' could not be found!${NC}"
+			echo -e "${RED}Error, command '$command' could not be found!${NC}"
 		fi
 		exit 1
 	fi
@@ -51,9 +48,8 @@ init() {
 	check_tool jq
 	check_tool wget
 	check_tool base64
-	check_tool bc
 	check_tool numfmt
-	if [[ $DEBUG_LEVEL -gt 0 ]]; then echo "${GREEN}OK${NC}"; fi
+	if [[ $DEBUG_LEVEL -gt 0 ]]; then echo -e "${GREEN}OK${NC}"; fi
 	check_API
 	get_SID
 }
@@ -108,7 +104,7 @@ check_API() {
 	if [[ $(echo "$response" | jq -r '.success') != 'true' ]]; then
 		local error_code=$(echo "$response" | jq -r '.error.code')
 		if [[ $DEBUG_LEVEL -gt 0 ]]; then
-			echo "${RED}Error code: $error_code ${NC}"
+			echo -e "${RED}Error code: $error_code ${NC}"
 			echo $( error_description $error_code $API )
 		fi
 		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi
@@ -116,7 +112,7 @@ check_API() {
 	else
 		DS_URL=$(echo "$response" | jq -r '.data."SYNO.DownloadStation.Task".path')
 		if [[ $DEBUG_LEVEL -gt 0 ]]; then
-			echo "${GREEN}OK!${NC}"
+			echo -e "${GREEN}OK!${NC}"
 			echo "=> DS_URL: /webapi/$DS_URL"
 		fi
 		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi		
@@ -130,7 +126,7 @@ get_SID() {
 	if [[ $(echo "$response" | jq -r '.success') != 'true' ]]; then
 		local error_code=$(echo "$response" | jq -r '.error.code')
 		if [[ $DEBUG_LEVEL -gt 0 ]]; then
-			echo "${RED}Error code: $error_code ${NC}"
+			echo -e "${RED}Error code: $error_code ${NC}"
 			echo $( error_description $error_code $API )
 		fi
 		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi
@@ -138,7 +134,7 @@ get_SID() {
 	else
  		SID=$(echo "$response" | jq -r '.data.sid')
 		if [[ $DEBUG_LEVEL -gt 0 ]]; then
-			echo "${GREEN}OK!${NC}"
+			echo -e "${GREEN}OK!${NC}"
 			echo "=> SID: ${SID}"
 		fi
 		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi		
@@ -152,13 +148,13 @@ clean_up() {
 	if [[ $(echo "$response" | jq -r '.success') != 'true' ]]; then
 		local error_code=$(echo "$response" | jq -r '.error.code')
 		if [[ $DEBUG_LEVEL -gt 0 ]]; then
-			echo "${RED}Error code: $error_code ${NC}"
+			echo -e "${RED}Error code: $error_code ${NC}"
 			echo $( error_description $error_code $API )
 		fi
 		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi
 		exit 1
 	else
-		if [[ $DEBUG_LEVEL -gt 0 ]]; then echo "${GREEN}OK!${NC}"; fi
+		if [[ $DEBUG_LEVEL -gt 0 ]]; then echo -e "${GREEN}OK!${NC}"; fi
 		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi		
 	fi
 }
@@ -170,13 +166,13 @@ list() {
 	if [[ $(echo "$response" | jq -r '.success') != 'true' ]]; then
 		local error_code=$(echo "$response" | jq -r '.error.code')
 		if [[ $DEBUG_LEVEL -gt 0 ]]; then
-			echo "${RED}Error code: $error_code ${NC}"
+			echo -e "${RED}Error code: $error_code ${NC}"
 			echo $( error_description $error_code $API )
 		fi
 		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi
 		exit 1
 	else
-		if [[ $DEBUG_LEVEL -gt 0 ]]; then echo "${GREEN}OK!${NC}"; fi
+		if [[ $DEBUG_LEVEL -gt 0 ]]; then echo -e "${GREEN}OK!${NC}"; fi
 		tasks=$(echo "$response" | jq -r '.data.total')
 		if [[ $DEBUG_LEVEL -gt 0 ]]; then
 			echo "=> Number of downloads: $tasks"
@@ -200,7 +196,7 @@ list() {
 			    	percent="0%"
 			    fi
 			    if [[ $DEBUG_LEVEL -gt 0 ]]; then echo -n "=> "; fi
-			    echo "${GREEN}$id,\"$title\",$status,$speed_human,$size_human,$downloaded_human,$percent${NC}"
+			    echo -e "${GREEN}$id,\"$title\",$status,$speed_human,$size_human,$downloaded_human,$percent${NC}"
 			done
 		fi
 	fi
@@ -215,15 +211,17 @@ add() {
 		if [[ $(echo "$response" | jq -r '.success') != 'true' ]]; then
 			local error_code=$(echo "$response" | jq -r '.error.code')
 			if [[ $DEBUG_LEVEL -gt 0 ]]; then
-				echo "${RED}Error code: $error_code ${NC}"
+				echo -e "${RED}Error code: $error_code ${NC}"
 				echo $( error_description $error_code $API )
 			fi
 			if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi
 			exit 1
 		else
-			if [[ $DEBUG_LEVEL -gt 0 ]]; then echo "${GREEN}OK!${NC}"; fi
+			if [[ $DEBUG_LEVEL -gt 0 ]]; then echo -e "${GREEN}OK!${NC}"; fi
 			if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi		
 		fi
+	else
+		if [[ $DEBUG_LEVEL -gt 0 ]]; then echo -e "Adding URL... ${RED}Error, invalid URL${NC}"; fi
 	fi
 }
 
@@ -240,13 +238,13 @@ action() {
 	if [[ $(echo "$response" | jq -r '.success') != 'true' ]]; then
 		local error_code=$(echo "$response" | jq -r '.error.code')
 		if [[ $DEBUG_LEVEL -gt 0 ]]; then
-			echo "${RED}Error code: $error_code ${NC}"
+			echo -e "${RED}Error code: $error_code ${NC}"
 			echo $( error_description $error_code $API )
 		fi
 		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi
 		exit 1
 	else
-		if [[ $DEBUG_LEVEL -gt 0 ]]; then echo "${GREEN}OK!${NC}"; fi
+		if [[ $DEBUG_LEVEL -gt 0 ]]; then echo -e "${GREEN}OK!${NC}"; fi
 		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi		
 	fi
 }
