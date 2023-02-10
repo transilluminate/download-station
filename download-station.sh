@@ -103,6 +103,7 @@ error_description () {	# who puts non-unique error codes?!
 check_API() {
 	if [[ $DEBUG_LEVEL -gt 0 ]]; then echo -n "Checking API on Synology... "; fi
 	local API="SYNO.API.Info"
+	# /webapi/query.cgi is the only 'fixed' URL in the API
 	local response=$($WGET "${LOCATION}/webapi/query.cgi?api=${API}&version=1&method=query&query=SYNO.API.Auth,SYNO.DownloadStation.Task")
 	if [[ $(echo "$response" | jq -r '.success') != 'true' ]]; then
 		local error_code=$(echo "$response" | jq -r '.error.code')
@@ -113,10 +114,12 @@ check_API() {
 		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response"; fi
 		exit 1
 	else
+		Auth_URL=$(echo "$response" | jq -r '.data."SYNO.API.Auth".path')
 		DS_URL=$(echo "$response" | jq -r '.data."SYNO.DownloadStation.Task".path')
 		if [[ $DEBUG_LEVEL -gt 0 ]]; then
 			echo -e "${GREEN}OK!${NC}"
-			echo "=> DS_URL: /webapi/$DS_URL"
+			echo "=> Auth_URL: /webapi/$Auth_URL"
+			echo "=> DS_URL:   /webapi/$DS_URL"
 		fi
 		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response"; fi
 	fi
@@ -125,7 +128,7 @@ check_API() {
 get_SID() {
 	if [[ $DEBUG_LEVEL -gt 0 ]]; then echo -n "Getting authentication token... "; fi
 	local API="SYNO.API.Auth"
-	local response=$($WGET "${LOCATION}/webapi/entry.cgi?api=${API}&version=3&method=login&account=${USERNAME}&passwd=${PASSWORD}&session=DownloadStation&format=sid")	
+	local response=$($WGET "${LOCATION}/webapi/${Auth_URL}?api=${API}&version=3&method=login&account=${USERNAME}&passwd=${PASSWORD}&session=DownloadStation&format=sid")	
 	if [[ $(echo "$response" | jq -r '.success') != 'true' ]]; then
 		local error_code=$(echo "$response" | jq -r '.error.code')
 		if [[ $DEBUG_LEVEL -gt 0 ]]; then
@@ -147,7 +150,7 @@ get_SID() {
 clean_up() {
 	if [[ $DEBUG_LEVEL -gt 0 ]]; then echo -n "Cleaning up... "; fi
 	local API="SYNO.API.Auth"	
-	local response=$($WGET "${LOCATION}/webapi/entry.cgi?api=${API}&version=3&method=logout&session=DownloadStation")
+	local response=$($WGET "${LOCATION}/webapi/${Auth_URL}?api=${API}&version=3&method=logout&session=DownloadStation")
 	if [[ $(echo "$response" | jq -r '.success') != 'true' ]]; then
 		local error_code=$(echo "$response" | jq -r '.error.code')
 		if [[ $DEBUG_LEVEL -gt 0 ]]; then
