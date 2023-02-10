@@ -2,6 +2,9 @@
 # Copyright 2023 Adrian Robinson <adrian.j.robinson at gmail dot com>
 # https://github.com/transilluminate/download-station
 
+# Inspiration and a couple of lines from the now non-functional ds-cli script
+# https://github.com/xaozai/ds-cli
+
 # location of the config file
 CONFIG_FILE="/var/services/homes/adrian/etc/download-station.config"
 
@@ -107,7 +110,7 @@ check_API() {
 			echo -e "${RED}Error code: $error_code ${NC}"
 			echo $( error_description $error_code $API )
 		fi
-		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi
+		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response"; fi
 		exit 1
 	else
 		DS_URL=$(echo "$response" | jq -r '.data."SYNO.DownloadStation.Task".path')
@@ -115,7 +118,7 @@ check_API() {
 			echo -e "${GREEN}OK!${NC}"
 			echo "=> DS_URL: /webapi/$DS_URL"
 		fi
-		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi		
+		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response"; fi
 	fi
 }
 
@@ -129,7 +132,7 @@ get_SID() {
 			echo -e "${RED}Error code: $error_code ${NC}"
 			echo $( error_description $error_code $API )
 		fi
-		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi
+		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response"; fi
 		exit 1
 	else
  		SID=$(echo "$response" | jq -r '.data.sid')
@@ -137,7 +140,7 @@ get_SID() {
 			echo -e "${GREEN}OK!${NC}"
 			echo "=> SID: ${SID}"
 		fi
-		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi		
+		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response"; fi		
 	fi
 }
 
@@ -151,11 +154,11 @@ clean_up() {
 			echo -e "${RED}Error code: $error_code ${NC}"
 			echo $( error_description $error_code $API )
 		fi
-		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi
+		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response"; fi
 		exit 1
 	else
 		if [[ $DEBUG_LEVEL -gt 0 ]]; then echo -e "${GREEN}OK!${NC}"; fi
-		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi		
+		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response"; fi		
 	fi
 }
 
@@ -169,16 +172,17 @@ list() {
 			echo -e "${RED}Error code: $error_code ${NC}"
 			echo $( error_description $error_code $API )
 		fi
-		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi
+		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response"; fi
 		exit 1
 	else
 		if [[ $DEBUG_LEVEL -gt 0 ]]; then echo -e "${GREEN}OK!${NC}"; fi
 		tasks=$(echo "$response" | jq -r '.data.total')
 		if [[ $DEBUG_LEVEL -gt 0 ]]; then
 			echo "=> Number of downloads: $tasks"
-			echo "=> Format: id,\"title\",status,download speed,size,downloaded,percentage complete"
+			echo "=> Format: id,\"title\",status,download speed,downloaded,size,percentage complete"
 		fi
 		if [[ $tasks -gt 0 ]]; then
+			# base64 packing/unpacking from https://github.com/xaozai/ds-cli
 			for row in $(echo "$response" | jq -r '.data.tasks[] | @base64'); do
 			    decode_json() { echo ${row} | base64 --decode | jq -r ${1}; }
 			    id=$(decode_json '.id')
@@ -196,7 +200,7 @@ list() {
 			    	percent="0%"
 			    fi
 			    if [[ $DEBUG_LEVEL -gt 0 ]]; then echo -n "=> "; fi
-			    echo -e "${GREEN}$id,\"$title\",$status,$speed_human,$size_human,$downloaded_human,$percent${NC}"
+			    echo -e "${GREEN}$id,\"$title\",$status,$speed_human,$downloaded_human,$size_human,$percent${NC}"
 			done
 		fi
 	fi
@@ -212,11 +216,11 @@ add() {
 			local error_code=$(echo "$response" | jq -r '.error.code')
 			echo -e "${RED}Error code: $error_code ${NC}"			
 			if [[ $DEBUG_LEVEL -gt 0 ]]; then echo $( error_description $error_code $API ); fi
-			if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi	
+			if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response"; fi	
 			exit 1
 		else
 			echo -e "${GREEN}OK!${NC}"
-			if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi
+			if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response"; fi
 		fi
 	else
 		echo -e "Adding URL... ${RED}Error, invalid URL${NC}"
@@ -235,11 +239,11 @@ action() {
 		local error_code=$(echo "$response" | jq -r '.error.code')
 		echo -e "${RED}Error code: $error_code ${NC}"
 		if [[ $DEBUG_LEVEL -gt 0 ]]; then echo $( error_description $error_code $API ); fi
-		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi
+		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response"; fi
 		exit 1
 	else
 		echo -e "${GREEN}OK!${NC}"
-		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi		
+		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response"; fi		
 	fi
 }
 
