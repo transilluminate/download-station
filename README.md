@@ -36,11 +36,11 @@ $ ./download-station.sh list
 ```
 Usage: download-station.sh [options]
 Options are:
-  list		    - lists current downloads
+  list        - lists current downloads
   add <url>   - adds the .torrent or magnet link
-  delete <id>	- deletes the download
-  pause <id>	- pauses the download
-  resume <id>	- resumes the download
+  delete <id> - deletes the download
+  pause <id>  - pauses the download
+  resume <id> - resumes the download
 ```
 
 
