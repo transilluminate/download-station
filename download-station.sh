@@ -252,13 +252,11 @@ case "${1}" in
 	add)
 		init
 		add "${2}"
-		list
 		clean_up
 	;;
 	delete)
 		init
 		action delete "${2}"
-		list
 		clean_up	
 	;;
 	pause)
