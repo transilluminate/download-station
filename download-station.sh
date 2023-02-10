@@ -280,11 +280,11 @@ case "${1}" in
 	*)
     echo "Usage: $0 [options]"
     echo "Options are:"
-    echo "  list		- lists current downloads"
-    echo "  add <url>	- adds the .torrent or magnet link"
-    echo "  delete <id>	- deletes the download"
-    echo "  pause <id>	- pauses the download"
-    echo "  resume <id>	- resumes the download"
+    echo "  list        - lists current downloads"
+    echo "  add <url>   - adds the .torrent or magnet link"
+    echo "  delete <id> - deletes the download"
+    echo "  pause <id>  - pauses the download"
+    echo "  resume <id> - resumes the download"
     exit 1
     ;;
 esac
