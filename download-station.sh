@@ -1,10 +1,9 @@
 #!/bin/bash
 # Copyright 2023 Adrian Robinson <adrian.j.robinson at gmail dot com>
-#
-# https://global.download.synology.com/download/Document/Software/DeveloperGuide/Package/DownloadStation/All/enu/Synology_Download_Station_Web_API.pdf
-# (stupid error handling in the API, non-unique error numbers for different APIs)
+# https://github.com/transilluminate/download-station
 
-# download-station.sh
+# location of the config file
+CONFIG_FILE="/var/services/homes/adrian/etc/download-station.config"
 
 # set to 0 for quiet, 1 for progress, 2 for JSON responses
 DEBUG_LEVEL=0
@@ -13,11 +12,12 @@ DEBUG_LEVEL=0
 WGET="wget --no-check-certificate -qO -"
 
 # load external config file for login details
-if [ -e "./download-station.config" ]; then
-	source ./download-station.config
+if [ -e $CONFIG_FILE ]; then
+	source $CONFIG_FILE
 else
 	echo "Config file does not exist!"
 	echo "Please see download-station.config.example for hints"
+	exit 1
 fi
 
 setup_colours() {
