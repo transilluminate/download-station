@@ -111,7 +111,7 @@ check_API() {
 			echo -e "${RED}Error code: $error_code ${NC}"
 			echo $( error_description $error_code $API )
 		fi
-		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response"; fi
+		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r '.'; fi
 		exit 1
 	else
 		Auth_URL=$(echo "$response" | jq -r '.data."SYNO.API.Auth".path')
@@ -121,7 +121,7 @@ check_API() {
 			echo "=> Auth_URL: /webapi/$Auth_URL"
 			echo "=> DS_URL:   /webapi/$DS_URL"
 		fi
-		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response"; fi
+		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r '.'; fi
 	fi
 }
 
@@ -135,7 +135,7 @@ get_SID() {
 			echo -e "${RED}Error code: $error_code ${NC}"
 			echo $( error_description $error_code $API )
 		fi
-		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response"; fi
+		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r '.'; fi
 		exit 1
 	else
  		SID=$(echo "$response" | jq -r '.data.sid')
@@ -143,7 +143,7 @@ get_SID() {
 			echo -e "${GREEN}OK!${NC}"
 			echo "=> SID: ${SID}"
 		fi
-		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response"; fi		
+		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r '.'; fi		
 	fi
 }
 
@@ -157,11 +157,11 @@ clean_up() {
 			echo -e "${RED}Error code: $error_code ${NC}"
 			echo $( error_description $error_code $API )
 		fi
-		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response"; fi
+		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r '.'; fi
 		exit 1
 	else
 		if [[ $DEBUG_LEVEL -gt 0 ]]; then echo -e "${GREEN}OK!${NC}"; fi
-		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response"; fi		
+		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r '.'; fi		
 	fi
 }
 
@@ -175,7 +175,7 @@ list() {
 			echo -e "${RED}Error code: $error_code ${NC}"
 			echo $( error_description $error_code $API )
 		fi
-		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response"; fi
+		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r '.'; fi
 		exit 1
 	else
 		if [[ $DEBUG_LEVEL -gt 0 ]]; then echo -e "${GREEN}OK!${NC}"; fi
@@ -206,6 +206,7 @@ list() {
 			    echo -e "${GREEN}$id,\"$title\",$status,$speed_human,$downloaded_human,$size_human,$percent${NC}"
 			done
 		fi
+		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r '.'; fi
 	fi
 }
 
@@ -219,11 +220,11 @@ add() {
 			local error_code=$(echo "$response" | jq -r '.error.code')
 			echo -e "${RED}Error code: $error_code ${NC}"			
 			if [[ $DEBUG_LEVEL -gt 0 ]]; then echo $( error_description $error_code $API ); fi
-			if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response"; fi	
+			if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r '.'; fi	
 			exit 1
 		else
 			echo -e "${GREEN}OK!${NC}"
-			if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response"; fi
+			if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r '.'; fi
 		fi
 	else
 		echo -e "Adding URL... ${RED}Error, invalid URL${NC}"
@@ -242,11 +243,11 @@ action() {
 		local error_code=$(echo "$response" | jq -r '.error.code')
 		echo -e "${RED}Error code: $error_code ${NC}"
 		if [[ $DEBUG_LEVEL -gt 0 ]]; then echo $( error_description $error_code $API ); fi
-		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response"; fi
+		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r '.'; fi
 		exit 1
 	else
 		echo -e "${GREEN}OK!${NC}"
-		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response"; fi		
+		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r '.'; fi		
 	fi
 }
 
