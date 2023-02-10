@@ -2,7 +2,9 @@
 
 ## Description
 
-This is a Bash shell script which can interface with a [Synology](https://www.synology.com/) download station via [API](https://global.download.synology.com/download/Document/Software/DeveloperGuide/Package/DownloadStation/All/enu/Synology_Download_Station_Web_API.pdf).
+This is a simple Bash shell script which can interface with a [Synology](https://www.synology.com/) download 
+station via 
+[API](https://global.download.synology.com/download/Document/Software/DeveloperGuide/Package/DownloadStation/All/enu/Synology_Download_Station_Web_API.pdf).
 
 Working and tested on [DSM 7.1](https://www.synology.com/en-us/DSM71).
 
