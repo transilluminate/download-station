@@ -20,6 +20,7 @@ Can be used anywhere using a [tailscale](https://tailscale.com) mesh network (do
 
 - [enable SSH access on download station](https://kb.synology.com/en-uk/DSM/help/DSM/AdminCenter/system_terminal?version=7)
 - download files, unzip
+- edit the script to point to the config file (for storing passwords)
 - create a download-station.config file from the example provided
 - copy them across (if there's no git installed)
 ```
