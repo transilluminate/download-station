@@ -10,5 +10,5 @@ USERNAME="person"
 PASSWORD="password"
 
 # location of the Synology. Port 5000 works.
-LOCATION="http://synology:5000"						# can use with tailscale mesh VPN
-#LOCATION="https://synology.ts123456.ts.net:5000"	#  ... or FQDN with https
+LOCATION="http://synology:5000"                    # can use with tailscale mesh VPN
+#LOCATION="https://synology.ts123456.ts.net:5000"  #  ... or FQDN with https
