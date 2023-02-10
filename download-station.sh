@@ -204,47 +204,41 @@ list() {
 
 add() {
 	if echo "$1" | grep -m 1 -q "magnet:?\|^http://.*\.torrent$\|^https://.*\.torrent$"; then
-		if [[ $DEBUG_LEVEL -gt 0 ]]; then echo -n "Adding URL... "; fi
+		echo -n "Adding URL... "
 		local API="SYNO.DownloadStation.Task"
 		local cleaned_url=$(echo -n "$1" | sed -e 's/%/%25/g' | sed -e 's/+/%2B/g'  | sed -e 's/ /%20/g' | sed -e 's/&/%26/g'  | sed -e 's/=/%3D/g')
 		local response=$($WGET "${LOCATION}/webapi/${DS_URL}?api=${API}&version=2&method=create&uri=${cleaned_url}&_sid=${SID}")
 		if [[ $(echo "$response" | jq -r '.success') != 'true' ]]; then
 			local error_code=$(echo "$response" | jq -r '.error.code')
-			if [[ $DEBUG_LEVEL -gt 0 ]]; then
-				echo -e "${RED}Error code: $error_code ${NC}"
-				echo $( error_description $error_code $API )
-			fi
-			if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi
+			echo -e "${RED}Error code: $error_code ${NC}"			
+			if [[ $DEBUG_LEVEL -gt 0 ]]; then echo $( error_description $error_code $API ); fi
+			if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi	
 			exit 1
 		else
-			if [[ $DEBUG_LEVEL -gt 0 ]]; then echo -e "${GREEN}OK!${NC}"; fi
-			if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi		
+			echo -e "${GREEN}OK!${NC}"
+			if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi
 		fi
 	else
-		if [[ $DEBUG_LEVEL -gt 0 ]]; then echo -e "Adding URL... ${RED}Error, invalid URL${NC}"; fi
+		echo -e "Adding URL... ${RED}Error, invalid URL${NC}"
 	fi
 }
 
 action() {
 	action=$1
 	id=$2
-	if [[ $DEBUG_LEVEL -gt 0 ]]; then
-		if [[ $action == "pause" ]]; 	then echo -n "Pausing task '${id}'... "; fi
-		if [[ $action == "resume" ]];	then echo -n "Resuming task '${id}'... "; fi
-		if [[ $action == "delete" ]];	then echo -n "Deleting task '${id}'... "; fi
-	fi
+	if [[ $action == "pause" ]]; 	then echo -n "Pausing task '${id}'... "; fi
+	if [[ $action == "resume" ]];	then echo -n "Resuming task '${id}'... "; fi
+	if [[ $action == "delete" ]];	then echo -n "Deleting task '${id}'... "; fi
 	local API="SYNO.DownloadStation.Task"
 	local response=$($WGET "${LOCATION}/webapi/${DS_URL}?api=${API}&version=1&method=${action}&id=${id}&_sid=${SID}")
 	if [[ $(echo "$response" | jq -r '.success') != 'true' ]]; then
 		local error_code=$(echo "$response" | jq -r '.error.code')
-		if [[ $DEBUG_LEVEL -gt 0 ]]; then
-			echo -e "${RED}Error code: $error_code ${NC}"
-			echo $( error_description $error_code $API )
-		fi
+		echo -e "${RED}Error code: $error_code ${NC}"
+		if [[ $DEBUG_LEVEL -gt 0 ]]; then echo $( error_description $error_code $API ); fi
 		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi
 		exit 1
 	else
-		if [[ $DEBUG_LEVEL -gt 0 ]]; then echo -e "${GREEN}OK!${NC}"; fi
+		echo -e "${GREEN}OK!${NC}"
 		if [[ $DEBUG_LEVEL -gt 1 ]]; then echo "$response" | jq -r; fi		
 	fi
 }
