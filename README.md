@@ -32,6 +32,15 @@ $ chflags 755 download-station.sh
 $ ./download-station.sh list
 ```
 
-
+## Usage
+```
+Usage: download-station.sh [options]
+Options are:
+  list        - lists current downloads
+  add <url>   - adds the .torrent or magnet link
+  delete <id> - deletes the download
+  pause <id>  - pauses the download
+  resume <id> - resumes the download
+```
 
 
