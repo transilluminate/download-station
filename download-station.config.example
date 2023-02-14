@@ -1,14 +1,10 @@
 #
-# download-station.config.example
+# btwifi-daemon.config.example
 #
 # Edit this file then save as download-station.config
 # If using Git add this to your .gitignore file:
-# 	'$ echo download-station.config >> .gitignore'
+# 	'$ echo btwifi-daemon.config >> .gitignore'
 
-# login details for a valid user on the Synology device
+# login details for BTWiFi
 USERNAME="person"
 PASSWORD="password"
-
-# location of the Synology. Port 5000 works.
-LOCATION="http://synology:5000"                    # can use with tailscale mesh VPN
-#LOCATION="https://synology.ts123456.ts.net:5000"  #  ... or FQDN with https
