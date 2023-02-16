@@ -1,6 +1,7 @@
 #!/bin/bash
-# Copyright 2023 Adrian Robinson <adrian.j.robinson at gmail dot com>
-# https://github.com/transilluminate/download-station
+# Copyright 2023 Adrian Robinson
+# email: $ echo YWRyaWFuIGRvdCBqIGRvdCByb2JpbnNvbiBhdCBnbWFpbCBkb3QgY29tCg== | base64 --decode
+# github: https://github.com/transilluminate/download-station
 
 # Inspiration and a couple of lines from the now non-functional ds-cli script
 # https://github.com/xaozai/ds-cli
