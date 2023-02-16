@@ -29,7 +29,7 @@ $ scp -O download-station.config user@synology.local:~
 ```
 - ssh into the synology, make executable, and test:
 ```
-$ chflags 755 download-station.sh	
+$ chmod 755 download-station.sh	
 $ ./download-station.sh list
 ```
 
