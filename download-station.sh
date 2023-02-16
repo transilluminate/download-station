@@ -283,13 +283,14 @@ case "${1}" in
 	*)
     echo "Usage: $0 [options]"
     echo "Options are:"
-    echo "  list                      - lists current downloads"
-    echo "  delete <id>               - deletes the download"
-    echo "  pause <id>                - pauses the download"
-    echo "  resume <id>               - resumes the download"
-    echo "  add <url> <destination>   - adds the url http(s) or magnet link to destination [optional]"
-    echo "                            - note: the destination folder must exist as a path from the server"
-    echo "                            - for example smb://server/share/folder, use share/folder/subfolder"
+    echo "  list                    - lists current downloads"
+    echo "  delete <id>             - deletes the download"
+    echo "  pause <id>              - pauses the download"
+    echo "  resume <id>             - resumes the download"
+    echo "  add <url> <destination> - adds the url http(s) or magnet link (to destination)"
+    echo "                            Destination folder is optional, must already exist"
+    echo "                            for example for folder smb://synology/share/folder"
+    echo "                            use share/folder as your destination"
     exit 1
     ;;
 esac
