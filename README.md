@@ -35,13 +35,15 @@ $ ./download-station.sh list
 
 ## Usage
 ```
-Usage: download-station.sh [options]
+Usage: ./download-station.sh [options]
 Options are:
-  list        - lists current downloads
-  add <url>   - adds the .torrent or magnet link
-  delete <id> - deletes the download
-  pause <id>  - pauses the download
-  resume <id> - resumes the download
+  list                      - lists current downloads
+  delete <id>               - deletes the download
+  pause <id>                - pauses the download
+  resume <id>               - resumes the download
+  add <url> <destination>   - adds the url http(s) or magnet link to destination [optional]
+                            - note: the destination folder must exist as a path from the server
+                            - for example smb://server/share/folder, use share/folder/subfolder
 ```
 
 

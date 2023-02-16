@@ -9,7 +9,7 @@
 CONFIG_FILE="/var/services/homes/adrian/etc/download-station.config"
 
 # set to 0 for quiet, 1 for progress, 2 for JSON responses
-DEBUG_LEVEL=0
+DEBUG_LEVEL=2
 
 # our wget parameters
 WGET="wget --no-check-certificate -qO -"
@@ -52,7 +52,7 @@ init() {
 	check_tool wget
 	check_tool base64
 	check_tool numfmt
-	if [[ $DEBUG_LEVEL -gt 0 ]]; then echo -e "${GREEN}OK${NC}"; fi
+	if [[ $DEBUG_LEVEL -gt 0 ]]; then echo -e "${GREEN}OK!${NC}"; fi
 	check_API
 	get_SID
 }
@@ -211,12 +211,13 @@ list() {
 }
 
 add() {
-# 	if echo "$1" | grep -m 1 -q "^magnet:?\|^http://.*\.torrent$\|^https://.*\.torrent$"; then
-	if echo "$1" | grep -m 1 -q "^magnet:?\|^http://\|^https://"; then
+	url=$2
+	destination=$3
+	if echo "$url" | grep -m 1 -q "^magnet:?\|^http://\|^https://"; then
 		echo -n "Adding URL... "
 		local API="SYNO.DownloadStation.Task"
-		local cleaned_url=$(echo -n "$1" | sed -e 's/%/%25/g' | sed -e 's/+/%2B/g'  | sed -e 's/ /%20/g' | sed -e 's/&/%26/g'  | sed -e 's/=/%3D/g')
-		local response=$($WGET "${LOCATION}/webapi/${DS_URL}?api=${API}&version=2&method=create&uri=${cleaned_url}&_sid=${SID}")
+		local cleaned_url=$(echo -n "$url" | sed -e 's/%/%25/g' | sed -e 's/+/%2B/g'  | sed -e 's/ /%20/g' | sed -e 's/&/%26/g'  | sed -e 's/=/%3D/g')
+		local response=$($WGET "${LOCATION}/webapi/${DS_URL}?api=${API}&version=2&method=create&uri=${cleaned_url}&destination=${destination}&_sid=${SID}")
 		if [[ $(echo "$response" | jq -r '.success') != 'true' ]]; then
 			local error_code=$(echo "$response" | jq -r '.error.code')
 			echo -e "${RED}Error code: $error_code ${NC}"			
@@ -260,7 +261,7 @@ case "${1}" in
 	;;
 	add)
 		init
-		add "${2}"
+		add "$@"
 		clean_up
 	;;
 	delete)
@@ -281,11 +282,13 @@ case "${1}" in
 	*)
     echo "Usage: $0 [options]"
     echo "Options are:"
-    echo "  list        - lists current downloads"
-    echo "  add <url>   - adds the .torrent or magnet link"
-    echo "  delete <id> - deletes the download"
-    echo "  pause <id>  - pauses the download"
-    echo "  resume <id> - resumes the download"
+    echo "  list                      - lists current downloads"
+    echo "  delete <id>               - deletes the download"
+    echo "  pause <id>                - pauses the download"
+    echo "  resume <id>               - resumes the download"
+    echo "  add <url> <destination>   - adds the url http(s) or magnet link to destination [optional]"
+    echo "                            - note: the destination folder must exist as a path from the server"
+    echo "                            - for example smb://server/share/folder, use share/folder/subfolder"
     exit 1
     ;;
 esac
