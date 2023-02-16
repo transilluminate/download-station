@@ -35,15 +35,16 @@ $ ./download-station.sh list
 
 ## Usage
 ```
-Usage: ./download-station.sh [options]
+Usage: /var/services/homes/adrian/bin/download-station.sh [options]
 Options are:
-  list                      - lists current downloads
-  delete <id>               - deletes the download
-  pause <id>                - pauses the download
-  resume <id>               - resumes the download
-  add <url> <destination>   - adds the url http(s) or magnet link, to destination (optional)
-                              note: the destination folder must exist as a path from the server
-                                    for example smb://server/share/folder, use share/folder
+  list                    - lists current downloads
+  delete <id>             - deletes the download
+  pause <id>              - pauses the download
+  resume <id>             - resumes the download
+  add <url> <destination> - adds the url http(s) or magnet link (to destination)
+                            Destination folder is optional, must already exist
+                            for example for folder smb://synology/share/folder
+                            use share/folder as your destination
 ```
 
 
